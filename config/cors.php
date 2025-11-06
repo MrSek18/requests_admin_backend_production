@@ -11,6 +11,7 @@ return [
         'http://localhost:3000',
         'https://mi-frontend.loca.lt',
         'https://red-donkey-35.loca.lt',
+        'https://requests-admin-frontend-production.vercel.app/'
     ],
 
     'allowed_origins_patterns' => [],
