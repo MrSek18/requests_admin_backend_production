@@ -8,11 +8,13 @@ services:
     autoDeploy: true
     envVars:
       - key: APP_ENV
-        value: production
+        value: local
+      - key: APP_DEBUG
+        value: true
       - key: APP_KEY
         value: base64:kAnAdrSz1hwjlPlSVNirUq7aq5HRHeHZ52JkZbZXFdk=
       - key: APP_URL
-        value: https://tubackend.onrender.com
+        value: https://laravel-backend.onrender.com
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
