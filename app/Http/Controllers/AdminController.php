@@ -5,11 +5,22 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Admin;
 use Illuminate\Support\Facades\Validator;
+use Anhskohbo\NoCaptcha\NoCaptcha;
 
 class AdminController extends Controller
 {
     public function register(Request $request)
     {
+        // Instancia con Site Key y Secret Key
+        $captcha = new NoCaptcha(
+            env('NOCAPTCHA_SITEKEY'),
+            env('NOCAPTCHA_SECRET')
+        );
+
+        // Verificar el token recibido
+        $response = $captcha->verifyResponse($request->input('g-recaptcha-response'));
+
+        dd($response); // 👈 imprime la respuesta cruda de Google
         // Validar datos + reCAPTCHA
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
