@@ -20,8 +20,11 @@ class AdminController extends Controller
         // Verificar el token recibido
         $response = $captcha->verifyResponse($request->input('g-recaptcha-response'));
 
-        dd($response); // 👈 imprime la respuesta cruda de Google
-        // Validar datos + reCAPTCHA
+        // 🔎 Depuración: devolver la respuesta cruda de Google
+        return response()->json($response);
+
+        // --- Cuando confirmes que funciona, elimina la línea anterior y deja la validación normal ---
+        /*
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:admins,email',
@@ -48,6 +51,7 @@ class AdminController extends Controller
             'message' => 'Admin registrado correctamente',
             'admin' => $admin
         ]);
+        */
     }
 
     public function update(Request $request, $id)
