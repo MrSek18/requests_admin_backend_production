@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'paths' => ['*'], // aplica CORS a todas las rutas
 
     'allowed_methods' => ['*'],
 
@@ -20,5 +20,3 @@ return [
 
     'supports_credentials' => true,
 ];
-
-// comment
