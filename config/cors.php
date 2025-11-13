@@ -5,12 +5,8 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'supports_credentials' => true,
-
     'allowed_origins' => [
         'http://localhost:3000',
-        'https://mi-frontend.loca.lt',
-        'https://red-donkey-35.loca.lt',
         'https://requests-admin-frontend-production.vercel.app',
     ],
 
@@ -21,4 +17,6 @@ return [
     'exposed_headers' => [],
 
     'max_age' => 0,
+
+    'supports_credentials' => true,
 ];
