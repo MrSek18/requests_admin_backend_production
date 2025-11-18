@@ -51,44 +51,44 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function login(Request $request)
-{
-    $credentials = $request->validate([
-        'email' => 'required|email',
-        'password' => 'required'
-    ], [
-        'email.required' => 'El correo electrónico es obligatorio',
-        'email.email' => 'El correo electrónico no es válido',
-        'password.required' => 'La contraseña es obligatoria'
-    ]);
+    {
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ], [
+            'email.required' => 'El correo electrónico es obligatorio',
+            'email.email' => 'El correo electrónico no es válido',
+            'password.required' => 'La contraseña es obligatoria'
+        ]);
 
-    try {
-        // Primer intento de búsqueda
-        $admin = Admin::where('email', $credentials['email'])->first();
-    } catch (\Illuminate\Database\QueryException $ex) {
-        // Si la conexión se cayó, reconectar y reintentar
-        DB::reconnect('mysql');
-        $admin = Admin::where('email', $credentials['email'])->first();
-    }
+        try {
+            // Primer intento de búsqueda
+            $admin = Admin::where('email', $credentials['email'])->first();
+        } catch (\Illuminate\Database\QueryException $ex) {
+            // Si la conexión se cayó, reconectar y reintentar
+            DB::reconnect('mysql');
+            $admin = Admin::where('email', $credentials['email'])->first();
+        }
 
-    // Verificar existencia y contraseña
-    if (!$admin || !Hash::check($credentials['password'], $admin->password)) {
+        // Verificar existencia y contraseña
+        if (!$admin || !Hash::check($credentials['password'], $admin->password)) {
+            return response()->json([
+                'message' => 'Credenciales inválidas'
+            ], 401);
+        }
+
+        // Elimina tokens existentes para evitar múltiples sesiones
+        $admin->tokens()->delete();
+
+        $token = $admin->createToken('auth_token')->plainTextToken;
+
         return response()->json([
-            'message' => 'Credenciales inválidas'
-        ], 401);
+            'message' => 'Inicio de sesión exitoso',
+            'user' => $admin,
+            'access_token' => $token,
+            'token_type' => 'Bearer'
+        ]);
     }
-
-    // Elimina tokens existentes para evitar múltiples sesiones
-    $admin->tokens()->delete();
-
-    $token = $admin->createToken('auth_token')->plainTextToken;
-
-    return response()->json([
-        'message' => 'Inicio de sesión exitoso',
-        'user' => $admin,
-        'access_token' => $token,
-        'token_type' => 'Bearer'
-    ]);
-}
 
 
     /**
