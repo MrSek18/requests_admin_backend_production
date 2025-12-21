@@ -15,12 +15,24 @@ use App\Http\Controllers\RequestController;
 use App\Http\Controllers\ServiceOrderController;
 use App\Http\Controllers\CompanyRepresentativeController;
 use App\Http\Controllers\AdminController;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 // Ruta pública de prueba
 Route::get('/test', function () {
     return response()->json(['message' => 'API funcionando']);
 });
 
+
+Route::get('/health', function () {
+    try {
+        DB::select('SELECT 1'); // Warm-up query
+        return response()->json(['status' => 'ok']);
+    } catch (\Exception $e) {
+        Log::warning("Health-check falló: " . $e->getMessage());
+        return response()->json(['status' => 'warming'], 503);
+    }
+});
 // Autenticación
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -58,9 +70,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/units', [UnitController::class, 'index']);
 
     Route::get('/company_representatives/{company_id}', [RepresentativeController::class, 'byCompany']);
-    
+
     Route::post('/add_request', [RequestController::class, 'store']);
-    Route::put('/admins/{id}', [AdminController::class, 'update']); 
+    Route::put('/admins/{id}', [AdminController::class, 'update']);
     Route::get('/requests/{request}/orden-servicio/pdf', [ServiceOrderController::class, 'download']);
     Route::get('/requests/recent', [RequestController::class, 'recent']);
 
